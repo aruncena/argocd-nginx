@@ -8,7 +8,7 @@ metadata:
 spec:
   selector:
     app: nginx
-    version: stable
+    version: preview
   ports:
     - port: 80
       targetPort: 80
