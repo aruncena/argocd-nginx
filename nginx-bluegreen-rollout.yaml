@@ -3,6 +3,7 @@ kind: Rollout
 metadata:
   name: nginx
 spec:
+  revisionHistoryLimit: 1
   replicas: 2
   selector:
     matchLabels:
