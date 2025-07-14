@@ -1,26 +1,26 @@
-apiVersion: argoproj.io/v1alpha1 #apps/v1
-kind: Rollout #Deployment
-metadata:
-  name: nginx
-  labels:
-    app: nginx
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-        - name: nginx
-          image: nginx #861923434973.dkr.ecr.ap-south-1.amazonaws.com/nginx:la
-          ports:
-            - containerPort: 80
-  strategy:
-    canary:
-      steps:
-        - setWeight: 50
-        - pause: {duration: 30s}          
+# apiVersion: argoproj.io/v1alpha1 #apps/v1
+# kind: Rollout #Deployment
+# metadata:
+#   name: nginx
+#   labels:
+#     app: nginx
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: nginx
+#   template:
+#     metadata:
+#       labels:
+#         app: nginx
+#     spec:
+#       containers:
+#         - name: nginx
+#           image: nginx #861923434973.dkr.ecr.ap-south-1.amazonaws.com/nginx:la
+#           ports:
+#             - containerPort: 80
+#   strategy:
+#     canary:
+#       steps:
+#         - setWeight: 50
+#         - pause: {duration: 30s}          
