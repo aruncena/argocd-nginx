@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: Rollout #Deployment
 metadata:
   name: nginx
   labels:
