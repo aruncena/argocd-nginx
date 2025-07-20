@@ -1,26 +1,21 @@
-# apiVersion: argoproj.io/v1alpha1 #apps/v1
-# kind: Rollout #Deployment
-# metadata:
-#   name: nginx
-#   labels:
-#     app: nginx
-# spec:
-#   replicas: 1
-#   selector:
-#     matchLabels:
-#       app: nginx
-#   template:
-#     metadata:
-#       labels:
-#         app: nginx
-#     spec:
-#       containers:
-#         - name: nginx
-#           image: nginx #861923434973.dkr.ecr.ap-south-1.amazonaws.com/nginx:la
-#           ports:
-#             - containerPort: 80
-#   strategy:
-#     canary:
-#       steps:
-#         - setWeight: 50
-#         - pause: {duration: 30s}          
+apiVersion: v1
+kind: Pod
+metadata:
+  name: spring
+spec:
+  serviceAccountName: my-app-sa
+  containers:
+    - name: spring
+      image: aruncena/helloworld-spring:v1
+      volumeMounts:
+        - name: secrets-store
+          mountPath: "/config/"
+          readOnly: true
+  volumes:
+    - name: secrets-store
+      csi:
+        driver: secrets-store.csi.k8s.io
+        readOnly: true
+        volumeAttributes:
+          secretProviderClass: "vault-spc-stage"
+
