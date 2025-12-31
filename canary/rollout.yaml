@@ -18,7 +18,7 @@ spec:
       - name: nginx
         image: argoproj/rollouts-demo:blue #nginx:perl
         ports:
-        - containerPort: 80
+        - containerPort: 8080
         volumeMounts:
         - name: html
           mountPath: /usr/share/nginx/html
