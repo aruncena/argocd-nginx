@@ -47,7 +47,7 @@ spec:
       - setWeight: 20
       - pause: { duration: 30 }
       - setWeight: 50
-      - pause: { duration: 30 }
+      - pause: { }
       - setWeight: 100
 
 # apiVersion: argoproj.io/v1alpha1
