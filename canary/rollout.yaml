@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx:perl
+        image: argoproj/rollouts-demo:blue #nginx:perl
         ports:
         - containerPort: 80
         volumeMounts:
