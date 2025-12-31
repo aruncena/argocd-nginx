@@ -28,4 +28,11 @@ spec:
         - pause:
             duration: 10s # 1 hour
         - setWeight: 20
-        - pause: {}
+        - pause: 
+            duration: 10s
+        - setWeight: 30
+        - pause: 
+            duration: 10s
+        - setWeight: 50
+        - pause: 
+            duration: 10s                        
