@@ -5,4 +5,4 @@ metadata:
   namespace: canary-demo
 data:
   index.html: |
-    <h1>Version v1</h1>
+    <h1>Version v2</h1>
