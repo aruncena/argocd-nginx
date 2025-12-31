@@ -9,7 +9,8 @@ spec:
   gateways:
   - demo-gateway
   http:
-  - route:
+  - name: http     # 🔴 THIS WAS MISSING
+    route:
     - destination:
         host: demo
         subset: stable
