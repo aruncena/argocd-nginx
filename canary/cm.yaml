@@ -5,4 +5,4 @@ metadata:
   namespace: canary-demo
 data:
   index.html: |
-    <h1>Version v4</h1>
+    <h1>Canary deployments, inceasing the pods !!!</h1>

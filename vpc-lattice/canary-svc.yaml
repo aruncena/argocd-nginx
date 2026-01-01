@@ -1,16 +1,17 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: demo-stable
+  name: canary-app
+  namespace: canary-demo
 spec:
   parentRefs:
-  - name: argocd
+    - name: argocd
+      namespace: default
   rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /
-    backendRefs:
-    - name: demo-stable
-      namespace: canary-demo
-      port: 80
+    - backendRefs:
+        - name: demo-stable
+          port: 80
+          weight: 100
+        - name: demo-canary
+          port: 80
+          weight: 0
