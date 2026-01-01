@@ -31,6 +31,8 @@ spec:
     canary:
       stableService: demo-stable
       canaryService: demo-canary
+      setCanaryScale:
+        replicas: 1
       # trafficRouting:
       #   managedRoutes:
       #     - name: canary-app      
