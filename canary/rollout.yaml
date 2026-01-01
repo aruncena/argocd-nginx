@@ -38,7 +38,7 @@ spec:
         plugins:
           argoproj-labs/gatewayAPI:
             httpRoute: canary-app
-            namespace: default
+            namespace: canary-demo
       # trafficRouting:
       #   istio:
       #     virtualService:
