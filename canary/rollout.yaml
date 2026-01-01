@@ -32,16 +32,16 @@ spec:
       stableService: demo-stable
       canaryService: demo-canary
 
-      trafficRouting:
-        istio:
-          virtualService:
-            name: demo-vs
-            routes:
-            - http
-          destinationRule:
-            name: demo-dr
-            stableSubsetName: stable
-            canarySubsetName: canary
+      # trafficRouting:
+      #   istio:
+      #     virtualService:
+      #       name: demo-vs
+      #       routes:
+      #       - http
+          # destinationRule:
+          #   name: demo-dr
+          #   stableSubsetName: stable
+          #   canarySubsetName: canary
 
       steps:
       - setWeight: 20
