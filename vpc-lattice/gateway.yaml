@@ -1,0 +1,15 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: argocd
+  annotations:
+    application-networking.k8s.aws/lattice-service-network: arn:aws:vpc-lattice:ap-south-1:944063458499:servicenetwork/sn-03222abe2ce61d0e6
+spec:
+  gatewayClassName: amazon-vpc-lattice
+  listeners:
+  - name: http
+    protocol: HTTP
+    port: 80
+    allowedRoutes:
+      namespaces:
+        from: All
