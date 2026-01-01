@@ -31,11 +31,11 @@ spec:
     canary:
       stableService: demo-stable
       canaryService: demo-canary
-      trafficRouting:
-        plugins:
-          argoproj-labs/gatewayAPI:
-            httpRoute: canary-app
-            namespace: default
+      # trafficRouting:
+      #   plugins:
+      #     argoproj-labs/gatewayAPI:
+      #       httpRoute: canary-app
+      #       namespace: default
       # trafficRouting:
       #   istio:
       #     virtualService:
