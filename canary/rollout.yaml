@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx #nginx:perl #argoproj/rollouts-demo:green #blue #nginx:perl
+        image: httpd #nginx:perl #argoproj/rollouts-demo:green #blue #nginx:perl
         ports:
         - containerPort: 80 #8080
         volumeMounts:
@@ -31,11 +31,11 @@ spec:
     canary:
       stableService: demo-stable
       canaryService: demo-canary
-      # trafficRouting:
-      #   plugins:
-      #     argoproj-labs/gatewayAPI:
-      #       httpRoute: canary-app
-      #       namespace: default
+      trafficRouting:
+        plugins:
+          argoproj-labs/gatewayAPI:
+            httpRoute: canary-app
+            namespace: default
       # trafficRouting:
       #   istio:
       #     virtualService:
