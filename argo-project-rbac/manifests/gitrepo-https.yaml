@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-https-repo
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+type: Opaque
+stringData:
+  type: git
+  url: https://github.com/myorg/my-repo
+  username: my-username
+  password: my-password  # Or personal access token
+  
+  # Optional fields
+  project: my-project  # Scope to specific project
+  name: my-repo-name  # Friendly name
+  
+  # TLS configuration
+  insecure: "false"  # Set to "true" to skip TLS verification
+  tlsClientCertData: |
+    -----BEGIN CERTIFICATE-----
+    ...
+    -----END CERTIFICATE-----
+  tlsClientCertKey: |
+    -----BEGIN PRIVATE KEY-----
+    ...
+    -----END PRIVATE KEY-----
+  
+  # Proxy configuration
+  proxy: http://proxy.example.com:8080
+  noProxy: localhost,127.0.0.1
+  
+  # Git LFS support
+  enableLfs: "true"
+  
+  # Force HTTP basic auth
+  forceHttpBasicAuth: "true"
+  
+  # GitHub-specific
+  githubAppID: "12345"
+  githubAppInstallationID: "67890"
+  githubAppPrivateKey: |
+    -----BEGIN RSA PRIVATE KEY-----
+    ...
+    -----END RSA PRIVATE KEY-----

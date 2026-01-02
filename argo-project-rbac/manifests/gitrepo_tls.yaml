@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-tls-certs-cm
+  namespace: argocd
+data:
+  # Custom certificate for git.example.com
+  git.example.com: |
+    -----BEGIN CERTIFICATE-----
+    MIIDXTCCAkWgAwIBAgIJAKHV6VVhKJXKMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNV
+    ...
+    -----END CERTIFICATE-----
+  
+  # Another certificate
+  gitlab.company.com: |
+    -----BEGIN CERTIFICATE-----
+    ...
+    -----END CERTIFICATE-----

@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: my-project
+  namespace: argocd
+spec:
+  roles:
+    - name: developer
+      policies:
+        - p, proj:my-project:developer, applications, get, my-project/*, allow
+        - p, proj:my-project:developer, applications, list, my-project/*, allow
+        - p, proj:my-project:developer, applications, sync, my-project/*, allow
+        - p, proj:my-project:developer, logs, get, my-project/*, allow
+      groups:
+        - my-dev-group  # This is just a string - not a real group yet

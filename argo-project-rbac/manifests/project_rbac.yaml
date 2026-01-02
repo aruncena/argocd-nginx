@@ -1,0 +1,100 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: my-project
+  namespace: argocd
+spec:
+  roles:
+    # =============================================
+    # READ-ONLY ROLE
+    # =============================================
+    - name: readonly
+      description: "Read-only access to all applications"
+      policies:
+        - p, proj:my-project:readonly, applications, get, my-project/*, allow
+        - p, proj:my-project:readonly, applications, list, my-project/*, allow
+        - p, proj:my-project:readonly, logs, get, my-project/*, allow
+      groups:
+        - viewers
+        - auditors
+    
+    # =============================================
+    # DEVELOPER ROLE
+    # =============================================
+    - name: developer
+      description: "Can deploy and sync applications"
+      policies:
+        # Read permissions
+        - p, proj:my-project:developer, applications, get, my-project/*, allow
+        - p, proj:my-project:developer, applications, list, my-project/*, allow
+        
+        # Sync permissions
+        - p, proj:my-project:developer, applications, sync, my-project/*, allow
+        - p, proj:my-project:developer, applications, override, my-project/*, allow
+        
+        # View logs
+        - p, proj:my-project:developer, logs, get, my-project/*, allow
+      groups:
+        - team-developers
+    
+    # =============================================
+    # DEVOPS ROLE
+    # =============================================
+    - name: devops
+      description: "Full application management"
+      policies:
+        # All application operations
+        - p, proj:my-project:devops, applications, *, my-project/*, allow
+        
+        # Project settings (read-only)
+        - p, proj:my-project:devops, projects, get, my-project, allow
+        
+        # Exec into pods
+        - p, proj:my-project:devops, exec, create, my-project/*, allow
+      groups:
+        - devops-team
+        - sre-team
+    
+    # =============================================
+    # ADMIN ROLE
+    # =============================================
+    - name: admin
+      description: "Full project and application management"
+      policies:
+        # All application operations
+        - p, proj:my-project:admin, applications, *, my-project/*, allow
+        
+        # Project management
+        - p, proj:my-project:admin, projects, get, my-project, allow
+        - p, proj:my-project:admin, projects, update, my-project, allow
+        
+        # Repository management
+        - p, proj:my-project:admin, repositories, *, my-project/*, allow
+        
+        # Cluster management
+        - p, proj:my-project:admin, clusters, get, *, allow
+      groups:
+        - platform-team
+        - project-leads
+    
+    # =============================================
+    # CI/CD ROLE (for automation)
+    # =============================================
+    - name: ci-cd
+      description: "Automated deployment role"
+      policies:
+        - p, proj:my-project:ci-cd, applications, get, my-project/*, allow
+        - p, proj:my-project:ci-cd, applications, sync, my-project/*, allow
+        - p, proj:my-project:ci-cd, applications, update, my-project/*, allow
+      # No groups - use JWT tokens for service accounts
+    
+    # =============================================
+    # ENVIRONMENT-SPECIFIC ROLES
+    # =============================================
+    - name: prod-deployer
+      description: "Can only deploy to production"
+      policies:
+        - p, proj:my-project:prod-deployer, applications, get, my-project/*-prod, allow
+        - p, proj:my-project:prod-deployer, applications, sync, my-project/*-prod, allow
+      groups:
+        - production-team

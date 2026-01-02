@@ -1,0 +1,17 @@
+# Edit the global RBAC ConfigMap
+kubectl edit configmap argocd-rbac-cm -n argocd
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-rbac-cm
+  namespace: argocd
+data:
+  policy.csv: |
+    # Map local users to groups
+    g, alice, my-dev-group
+    g, bob, my-dev-group
+    g, charlie, my-dev-group
+    
+    # Now the group 'my-dev-group' is mapped to the project role
+    # This happens automatically when the group name matches

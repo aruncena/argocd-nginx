@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-ssh-repo
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+type: Opaque
+stringData:
+  type: git
+  url: git@github.com:myorg/my-repo.git
+  sshPrivateKey: |
+    -----BEGIN OPENSSH PRIVATE KEY-----
+    b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+    QyNTUxOQAAACBqNKjT+Ju5wMw2LRMX5rLKa2RpL9cF7I2P7yVXmHqJ7gAAAJjP9DH0z/Qx
+    ...
+    -----END OPENSSH PRIVATE KEY-----
+  
+  # Optional
+  insecure: "true"  # Skip host key verification (not recommended)
+  project: my-project

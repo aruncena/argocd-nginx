@@ -1,0 +1,260 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: my-project
+  namespace: argocd  # Always in argocd namespace
+  # Finalizer ensures project isn't deleted while apps reference it
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  # =============================================
+  # BASIC INFORMATION
+  # =============================================
+  description: "Production environment project for Team A"
+  
+  # =============================================
+  # SOURCE REPOSITORIES
+  # =============================================
+  sourceRepos:
+    # Allow all repos (not recommended for production)
+    - '*'
+    
+    # Or specify exact repos
+    - 'https://github.com/myorg/app-repo'
+    - 'https://github.com/myorg/infra-repo'
+    
+    # Or use wildcards
+    - 'https://github.com/myorg/*'
+    - 'git@github.com:myorg/*'
+    
+    # Helm chart repositories
+    - 'https://charts.bitnami.com/bitnami'
+    - 'https://kubernetes.github.io/ingress-nginx'
+    
+    # OCI registries
+    - 'oci://ghcr.io/myorg/*'
+  
+  # =============================================
+  # DESTINATION CLUSTERS AND NAMESPACES
+  # =============================================
+  destinations:
+    # Allow specific namespace in specific cluster
+    - namespace: production
+      server: https://kubernetes.default.svc
+      name: in-cluster
+    
+    # Wildcard namespace pattern
+    - namespace: 'team-a-*'
+      server: https://kubernetes.default.svc
+    
+    # Allow all namespaces in a cluster
+    - namespace: '*'
+      server: https://prod-cluster.example.com
+      name: prod-cluster
+    
+    # Multiple clusters
+    - namespace: production
+      server: https://us-east-cluster.example.com
+      name: us-east
+    - namespace: production
+      server: https://us-west-cluster.example.com
+      name: us-west
+  
+  # Restrict apps to only clusters scoped to this project
+  permitOnlyProjectScopedClusters: false
+  
+  # =============================================
+  # CLUSTER RESOURCE WHITELIST
+  # =============================================
+  # Allow specific cluster-scoped resources
+  clusterResourceWhitelist:
+    # Allow Namespaces (common requirement)
+    - group: ''
+      kind: Namespace
+    
+    # Allow ClusterRoles
+    - group: 'rbac.authorization.k8s.io'
+      kind: ClusterRole
+    
+    # Allow ClusterRoleBindings
+    - group: 'rbac.authorization.k8s.io'
+      kind: ClusterRoleBinding
+    
+    # Allow Custom Resource Definitions
+    - group: 'apiextensions.k8s.io'
+      kind: CustomResourceDefinition
+    
+    # Allow all cluster resources (not recommended)
+    - group: '*'
+      kind: '*'
+    
+    # Allow with name pattern
+    - group: ''
+      kind: Namespace
+      name: 'team-a-*'  # Only namespaces starting with team-a-
+  
+  # =============================================
+  # CLUSTER RESOURCE BLACKLIST
+  # =============================================
+  # Deny specific cluster-scoped resources
+  clusterResourceBlacklist:
+    # Prevent creation of ClusterRoles
+    - group: 'rbac.authorization.k8s.io'
+      kind: ClusterRole
+    
+    # Prevent deletion of kube-system namespace
+    - group: ''
+      kind: Namespace
+      name: 'kube-*'
+  
+  # =============================================
+  # NAMESPACE RESOURCE WHITELIST
+  # =============================================
+  # Only allow specific namespaced resources
+  namespaceResourceWhitelist:
+    - group: 'apps'
+      kind: Deployment
+    - group: 'apps'
+      kind: StatefulSet
+    - group: ''
+      kind: Service
+    - group: ''
+      kind: ConfigMap
+    - group: ''
+      kind: Secret
+  
+  # =============================================
+  # NAMESPACE RESOURCE BLACKLIST
+  # =============================================
+  # Deny specific namespaced resources
+  namespaceResourceBlacklist:
+    # Prevent secrets in specific namespaces
+    - group: ''
+      kind: Secret
+    
+    # Prevent NetworkPolicies
+    - group: 'networking.k8s.io'
+      kind: NetworkPolicy
+  
+  # =============================================
+  # ORPHANED RESOURCES
+  # =============================================
+  orphanedResources:
+    # Enable orphaned resources detection
+    warn: true  # Show warning instead of error
+    
+    # Resources to ignore
+    ignore:
+      - group: 'apps'
+        kind: Deployment
+        name: 'legacy-*'
+      - group: ''
+        kind: ConfigMap
+        name: 'kube-root-ca.crt'  # Automatically created by K8s
+  
+  # =============================================
+  # ROLES AND PERMISSIONS
+  # =============================================
+  roles:
+    # Developer role
+    - name: developer
+      description: "Developers can view and sync applications"
+      policies:
+        # Get application details
+        - p, proj:my-project:developer, applications, get, my-project/*, allow
+        # List applications
+        - p, proj:my-project:developer, applications, list, my-project/*, allow
+        # Sync applications
+        - p, proj:my-project:developer, applications, sync, my-project/*, allow
+        # View logs
+        - p, proj:my-project:developer, logs, get, my-project/*, allow
+      groups:
+        - team-a-developers
+        - contractors
+      
+      # JWT tokens for this role (managed by ArgoCD)
+      jwtTokens:
+        - iat: 1609459200  # Issued at timestamp
+          exp: 1640995200  # Expiration timestamp
+          id: token-id-1
+    
+    # Admin role
+    - name: admin
+      description: "Full access to all applications in project"
+      policies:
+        # All operations on applications
+        - p, proj:my-project:admin, applications, *, my-project/*, allow
+        # Manage project settings
+        - p, proj:my-project:admin, projects, update, my-project, allow
+      groups:
+        - team-a-leads
+        - platform-team
+    
+    # Read-only role
+    - name: viewer
+      description: "Read-only access"
+      policies:
+        - p, proj:my-project:viewer, applications, get, my-project/*, allow
+        - p, proj:my-project:viewer, applications, list, my-project/*, allow
+      groups:
+        - auditors
+        - stakeholders
+  
+  # =============================================
+  # SYNC WINDOWS
+  # =============================================
+  syncWindows:
+    # Allow syncs during business hours
+    - kind: allow
+      schedule: '0 9-17 * * 1-5'  # 9 AM to 5 PM, Monday-Friday
+      duration: 8h
+      applications:
+        - '*-prod'
+      namespaces:
+        - production
+      clusters:
+        - in-cluster
+      manualSync: true  # Allow manual syncs during this window
+    
+    # Deny syncs during maintenance window
+    - kind: deny
+      schedule: '0 22 * * 6'  # 10 PM on Saturdays
+      duration: 4h
+      applications:
+        - '*'
+      manualSync: false  # Block even manual syncs
+    
+    # Allow deployments for specific apps
+    - kind: allow
+      schedule: '0 0 * * *'  # Daily at midnight
+      duration: 2h
+      applications:
+        - 'batch-jobs-*'
+      timeZone: 'America/New_York'
+  
+  # =============================================
+  # SIGNATURE KEYS
+  # =============================================
+  # GnuPG keys for commit signature verification
+  signatureKeys:
+    - keyID: ABCDEF1234567890
+    - keyID: 1234567890ABCDEF
+  
+  # =============================================
+  # SOURCE NAMESPACES
+  # =============================================
+  # For Applications-in-any-namespace feature
+  sourceNamespaces:
+    - argocd
+    - team-a-gitops
+    - team-a-apps
+  
+  # =============================================
+  # DESTINATION SERVICE ACCOUNTS
+  # =============================================
+  # Default service accounts for destinations
+  destinations:
+    - namespace: production
+      server: https://kubernetes.default.svc
+      # Default SA for this destination
+      serviceAccount: argocd-deployer

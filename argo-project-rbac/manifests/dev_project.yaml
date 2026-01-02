@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dev-project
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: "Development environment for Team A"
+  
+  sourceRepos:
+    - 'https://github.com/myorg/*'
+  
+  destinations:
+    - namespace: 'dev-*'
+      server: https://kubernetes.default.svc
+  
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  
+  roles:
+    - name: developer
+      policies:
+        - p, proj:dev-project:developer, applications, *, dev-project/*, allow
+      groups:
+        - team-a-devs
+  
+  syncWindows:
+    - kind: allow
+      schedule: '* * * * *'
+      duration: 24h
+      applications:
+        - '*'
+      manualSync: true

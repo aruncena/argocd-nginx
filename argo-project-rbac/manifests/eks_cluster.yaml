@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: eks-cluster
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: cluster
+type: Opaque
+stringData:
+  name: eks-production
+  server: https://ABCDEF123456.gr7.us-east-1.eks.amazonaws.com
+  config: |
+    {
+      "awsAuthConfig": {
+        "clusterName": "my-eks-cluster",
+        "roleARN": "arn:aws:iam::123456789012:role/ArgoCD-EKS-Role"
+      },
+      "tlsClientConfig": {
+        "insecure": false,
+        "caData": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0t..."
+      }
+    }

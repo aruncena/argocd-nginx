@@ -1,0 +1,16 @@
+# Login to ArgoCD
+argocd login argocd.example.com
+
+# Add cluster from kubeconfig
+argocd cluster add my-cluster-context
+
+# Add cluster with custom name
+argocd cluster add my-cluster-context --name production-cluster
+
+# Add cluster to specific project
+argocd cluster add my-cluster-context --project my-project
+
+# Add cluster with service account
+argocd cluster add my-cluster-context \
+  --service-account argocd-manager \
+  --namespace kube-system

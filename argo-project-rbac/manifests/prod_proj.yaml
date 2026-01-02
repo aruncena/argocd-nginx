@@ -1,0 +1,92 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: prod-project
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: "Production environment with strict controls"
+  
+  # Only specific approved repositories
+  sourceRepos:
+    - 'https://github.com/myorg/prod-apps'
+    - 'https://charts.bitnami.com/bitnami'
+  
+  # Only production namespace
+  destinations:
+    - namespace: production
+      server: https://prod-cluster.example.com
+      name: prod-cluster
+  
+  # Restrict to essential resources
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace
+  
+  namespaceResourceWhitelist:
+    - group: 'apps'
+      kind: Deployment
+    - group: 'apps'
+      kind: StatefulSet
+    - group: ''
+      kind: Service
+    - group: ''
+      kind: ConfigMap
+    - group: ''
+      kind: Secret
+    - group: 'networking.k8s.io'
+      kind: Ingress
+  
+  # No direct pod creation
+  namespaceResourceBlacklist:
+    - group: ''
+      kind: Pod
+  
+  # Multiple roles with different access levels
+  roles:
+    - name: viewer
+      policies:
+        - p, proj:prod-project:viewer, applications, get, prod-project/*, allow
+        - p, proj:prod-project:viewer, applications, list, prod-project/*, allow
+      groups:
+        - stakeholders
+    
+    - name: deployer
+      policies:
+        - p, proj:prod-project:deployer, applications, get, prod-project/*, allow
+        - p, proj:prod-project:deployer, applications, sync, prod-project/*, allow
+      groups:
+        - release-managers
+    
+    - name: admin
+      policies:
+        - p, proj:prod-project:admin, applications, *, prod-project/*, allow
+      groups:
+        - platform-team
+  
+  # Restrict sync windows
+  syncWindows:
+    # Only allow deployments Tuesday and Thursday afternoons
+    - kind: allow
+      schedule: '0 14-16 * * 2,4'
+      duration: 2h
+      applications:
+        - '*'
+      manualSync: true
+    
+    # Block all weekend deployments
+    - kind: deny
+      schedule: '0 0 * * 6'
+      duration: 48h
+      applications:
+        - '*'
+      manualSync: false
+  
+  # Orphaned resources detection
+  orphanedResources:
+    warn: true
+    ignore:
+      - group: ''
+        kind: ConfigMap
+        name: 'kube-root-ca.crt'

@@ -1,0 +1,57 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: my-project
+  namespace: argocd
+spec:
+  # =============================================
+  # ALLOW BASIC WORKLOADS
+  # =============================================
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace
+  
+  namespaceResourceWhitelist:
+    # Core resources
+    - group: ''
+      kind: ConfigMap
+    - group: ''
+      kind: Secret
+    - group: ''
+      kind: Service
+    - group: ''
+      kind: ServiceAccount
+    - group: ''
+      kind: PersistentVolumeClaim
+    
+    # Workloads
+    - group: 'apps'
+      kind: Deployment
+    - group: 'apps'
+      kind: StatefulSet
+    - group: 'apps'
+      kind: DaemonSet
+    - group: 'apps'
+      kind: ReplicaSet
+    - group: 'batch'
+      kind: Job
+    - group: 'batch'
+      kind: CronJob
+    
+    # Networking
+    - group: 'networking.k8s.io'
+      kind: Ingress
+    - group: 'networking.k8s.io'
+      kind: NetworkPolicy
+    
+    # RBAC
+    - group: 'rbac.authorization.k8s.io'
+      kind: Role
+    - group: 'rbac.authorization.k8s.io'
+      kind: RoleBinding
+    
+    # Autoscaling
+    - group: 'autoscaling'
+      kind: HorizontalPodAutoscaler
+    - group: 'policy'
+      kind: PodDisruptionBudget
