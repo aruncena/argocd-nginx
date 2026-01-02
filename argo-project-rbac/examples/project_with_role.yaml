@@ -11,5 +11,9 @@ spec:
         - p, proj:my-project:developer, applications, list, my-project/*, allow
         - p, proj:my-project:developer, applications, sync, my-project/*, allow
         - p, proj:my-project:developer, logs, get, my-project/*, allow
+        - p, proj:my-project:developer, repositories, *, *, deny
+        - p, proj:my-project:developer, clusters, *, *, deny
+        - p, proj:my-project:developer, exec, *, *, deny
+        - p, proj:my-project:developer, projects, *, *, deny
       groups:
         - my-dev-group  # This is just a string - not a real group yet
