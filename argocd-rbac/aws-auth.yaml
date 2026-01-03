@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aws-auth
+  namespace: kube-system
+data:
+  mapRoles: |
+    - rolearn: arn:aws:iam::<ACCOUNT_B_ID>:role/ArgoCD-Spoke-EKS-Access-Role
+      username: argocd
+      groups:
+        - argocd-admins
