@@ -1,5 +1,5 @@
-apiVersion: argoproj.io/v1alpha1 #apps/v1
-kind: Rollout #Deployment
+apiVersion: apps/v1 #argoproj.io/v1alpha1 #apps/v1
+kind: Deployment #Rollout #Deployment
 metadata:
   name: nginx
   labels:
