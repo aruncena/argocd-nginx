@@ -5,6 +5,7 @@ metadata:
   labels:
     app: nginx
 spec:
+  serviceaccount: nginx-sa
   replicas: 1
   selector:
     matchLabels:
