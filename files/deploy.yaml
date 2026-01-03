@@ -6,7 +6,7 @@ metadata:
     app: nginx
 spec:
   serviceaccount: nginx-sa
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: nginx
@@ -20,8 +20,8 @@ spec:
           image: nginx #861923434973.dkr.ecr.ap-south-1.amazonaws.com/nginx:la
           ports:
             - containerPort: 80
-  strategy:
-    canary:
-      steps:
-        - setWeight: 50
-        - pause: {duration: 30s}          
+  # strategy:
+  #   canary:
+  #     steps:
+  #       - setWeight: 50
+  #       - pause: {duration: 30s}          
