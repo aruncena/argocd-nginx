@@ -1,0 +1,93 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: argocd-manager
+rules:
+  # ----------------------------
+  # Core resource management
+  # ----------------------------
+  - apiGroups: [""]
+    resources:
+      - namespaces
+      - services
+      - configmaps
+      - endpoints
+      - persistentvolumeclaims
+      - events
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # ----------------------------
+  # Workloads
+  # ----------------------------
+  - apiGroups: ["apps"]
+    resources:
+      - deployments
+      - daemonsets
+      - statefulsets
+      - replicasets
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # ----------------------------
+  # Batch jobs
+  # ----------------------------
+  - apiGroups: ["batch"]
+    resources:
+      - jobs
+      - cronjobs
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # ----------------------------
+  # Autoscaling
+  # ----------------------------
+  - apiGroups: ["autoscaling"]
+    resources:
+      - horizontalpodautoscalers
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # ----------------------------
+  # Networking
+  # ----------------------------
+  - apiGroups: ["networking.k8s.io"]
+    resources:
+      - ingresses
+      - networkpolicies
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # ----------------------------
+  # Gateway API (if used)
+  # ----------------------------
+  - apiGroups: ["gateway.networking.k8s.io"]
+    resources:
+      - gateways
+      - httproutes
+      - tcproutes
+      - tlsroutes
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # ----------------------------
+  # Argo Rollouts (if used)
+  # ----------------------------
+  - apiGroups: ["argoproj.io"]
+    resources:
+      - rollouts
+      - analysisruns
+      - analysistemplates
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # ----------------------------
+  # Discovery ONLY (read-only)
+  # ----------------------------
+  - apiGroups: ["apiextensions.k8s.io"]
+    resources: ["customresourcedefinitions"]
+    verbs: ["get", "list", "watch"]
+
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["pods", "nodes"]
+    verbs: ["get", "list"]
+
+  # ----------------------------
+  # Secrets (STRICT)
+  # ----------------------------
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "watch"]
