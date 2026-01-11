@@ -7,4 +7,4 @@ metadata:
     argocd.argoproj.io/sync-wave: "0"
 data:
   index.html: |
-    <h1>Canary deployments, inceasing the pods !!!</h1>
+    <h1>Canary deployments, fdfsdfsd inceasing the pods !!!</h1>
