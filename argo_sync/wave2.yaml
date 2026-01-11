@@ -1,8 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: demo
-  namespace: canary-demo-1
+  name: demo-1
+  namespace: wav1
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
