@@ -4,7 +4,8 @@ metadata:
   name: nginx-html
   namespace: wave
   annotations:
-    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/hook: PreSync 
+#    argocd.argoproj.io/sync-wave: "0"
 data:
   index.html: |
-    <h1>Canary deployments, fdfsdfsd inceasing the pods !!!</h1>
+    <h1>Canary deployments, fdfsdfsd fghf inceasing the pods !!!</h1>
