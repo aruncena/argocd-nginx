@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: demo-1
-  namespace: wav1
+  namespace: wave
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
